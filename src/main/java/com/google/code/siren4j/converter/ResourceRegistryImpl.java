@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.reflections.Reflections;
 import org.reflections.util.ClasspathHelper;
@@ -147,8 +147,9 @@ public class ResourceRegistryImpl implements ResourceRegistry {
         Set<Class<?>> types = reflections.getTypesAnnotatedWith(Siren4JEntity.class);
         for (Class<?> c : types) {
             Siren4JEntity anno = c.getAnnotation(Siren4JEntity.class);
-            String name = StringUtils
-                    .defaultIfBlank(anno.name(), anno.entityClass().length > 0 ? anno.entityClass()[0] : c.getName());
+			String defaultName = (anno != null && anno.entityClass().length > 0) ? anno.entityClass()[0] : c.getName();
+			String annoName = anno != null ? anno.name(): null;
+			String name = StringUtils.defaultIfBlank(annoName, defaultName);
             putEntry(StringUtils.defaultIfEmpty(name, c.getName()), c, false);
             // Always add the class name as an entry in the index if it does not already exist.
             if (!containsEntityEntry(c.getName())) {

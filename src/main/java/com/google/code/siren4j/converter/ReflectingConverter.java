@@ -46,8 +46,8 @@ import com.google.code.siren4j.resource.CollectionResource;
 import com.google.code.siren4j.resource.Resource;
 import com.google.code.siren4j.util.ComponentUtils;
 import com.google.code.siren4j.util.ReflectionUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -327,6 +327,13 @@ public class ReflectingConverter implements ResourceConverter {
 
         boolean embeddedLink = false;
         List<ReflectedInfo> fieldInfo = ReflectionUtils.getExposedFieldInfo(clazz);
+        fieldInfo.sort(new Comparator<ReflectedInfo>() {
+
+			@Override
+			public int compare(ReflectedInfo o1, ReflectedInfo o2) {
+				return o1.getEffectiveName().compareTo(o2.getEffectiveName());
+			}
+		});
         EntityContext context = new EntityContextImpl(obj, fieldInfo, parentField, parentObj, parentFieldInfo);
 
         String cname = null;
